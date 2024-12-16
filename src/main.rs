@@ -37,7 +37,7 @@ fn run_timer(time: f32) {
     let duration_seconds = (time * 60.0).round() as i32;
 
     println!("Pomodoro Timer started for {:.1} minutes.", time);
-    for remaining in (0..duration_seconds).rev() {
+    for _ in (0..duration_seconds).rev() {
 
         std::io::stdout().flush().unwrap();
 
