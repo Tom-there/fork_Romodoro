@@ -1,29 +1,54 @@
-use std::ffi::c_float;
-use std::io::Write;
-use std::thread::sleep;
-use std::time::Duration;
+use std::{thread, time::Duration, io::Write, process::Command};
 use clap::Parser;
+use native_dialog::MessageDialog;
 
 #[derive(Parser)]
 struct Cli {
-    time: c_float
+    /// Time in minutes
+    time: f32,
+
+    /// Run the timer in the background
+    #[arg(long)]
+    background: bool,
 }
 
 fn main() {
     let args = Cli::parse();
-    
-    let duration_seconds = (args.time * 60.0).round() as i32;
-    
 
-    for remaining in (0..duration_seconds).rev() {
-        let minutes = remaining / 60;
-        let seconds = remaining % 60;
-
-        println!("\rTime Left: {:02}:{:02}", minutes, seconds);
-        std::io::stdout().flush().unwrap();
-
-        sleep(Duration::from_secs(1));
+    // If --background is specified, run the timer logic directly
+    if args.background {
+        run_timer(args.time);
+        return;
     }
 
-    println!("\nTime's Up! Take a break!");
+    // Run as a detached process
+    println!("Starting Pomodoro timer for {} minutes in the background...", args.time);
+
+    Command::new(std::env::current_exe().unwrap())
+        .args(&["--background", &args.time.to_string()])
+        .spawn()
+        .expect("Failed to start the timer in the background.");
+
+    println!("Timer is running in the background. You can continue working in this terminal.");
 }
+
+/// Timer Logic
+fn run_timer(time: f32) {
+    let duration_seconds = (time * 60.0).round() as i32;
+
+    println!("Pomodoro Timer started for {:.1} minutes.", time);
+    for remaining in (0..duration_seconds).rev() {
+
+        std::io::stdout().flush().unwrap();
+
+        thread::sleep(Duration::from_secs(1));
+    }
+
+    println!("\nTime's up! Take a break!");
+    MessageDialog::new()
+        .set_title("Pomodoro Timer")
+        .set_text("Time's up! Take a break!")
+        .show_alert()
+        .unwrap();
+}
+
