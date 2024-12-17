@@ -10,9 +10,9 @@ Features
 
 ### Linux
 1. Download the latest romo binary from the [Releases](https://github.com/dj-blume9/Romodoro/releases) page.
-2. Run the binary to install it globally:
+2. Run the following commands to install it globally:
     ``
-   chmod +x romo
+   tar -xvzf romo-linux.tar.gz
    ./romo
    ``
 3. Restart your terminal
