@@ -18,7 +18,10 @@ struct Cli {
 }
 
 fn main() {
-    ensure_global_install();
+    let installed = ensure_global_install();
+    if !installed {
+        return;
+    }
 
     let args = Cli::parse();
 

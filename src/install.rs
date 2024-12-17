@@ -1,6 +1,6 @@
 use std::{env, fs, path::PathBuf, process::Command};
 
-pub fn ensure_global_install() {
+pub fn ensure_global_install() -> bool {
     let exe_path = env::current_exe().expect("Failed to determine executable path.");
 
     #[cfg(target_os = "windows")]
@@ -25,7 +25,9 @@ pub fn ensure_global_install() {
             // Add to PATH if necessary
             add_to_path_windows(&user_bin_dir);
             println!("Romo installed successfully! Restart your terminal to use 'romo' globally.");
+            return false;
         }
+        return true;
     }
 
     #[cfg(target_os = "linux")]
@@ -48,7 +50,9 @@ pub fn ensure_global_install() {
             // Add ~/.local/bin to PATH if necessary
             add_to_path_linux(&local_bin_dir);
             println!("Romo installed successfully! Restart your terminal to use 'romo' globally.");
+            return false;
         }
+        return true;
     }
 }
 
