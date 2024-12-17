@@ -1,16 +1,17 @@
-mod timer;
+mod install;
 mod pid;
 mod process;
-mod install;
+mod timer;
 
 use clap::Parser;
+use install::ensure_global_install;
 use process::cancel_timer;
 use timer::run_timer;
-use install::ensure_global_install;
 
 #[derive(Parser)]
 struct Cli {
     /// Time in minutes
+    #[arg(value_parser = parse_time)]
     time: Option<f32>,
     /// Cancel timer flag
     #[arg(long)]
@@ -51,3 +52,13 @@ fn main() {
     run_timer(time);
 }
 
+fn parse_time(s: &str) -> Result<f32, String> {
+    let formatted = if s.starts_with('.') {
+        format!("0{}", s)
+    } else {
+        s.to_string()
+    };
+    formatted
+        .parse::<f32>()
+        .map_err(|_| "Invalid time format. Example: '0.25' or '25'".to_string())
+}
