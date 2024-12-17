@@ -10,11 +10,10 @@ Romo is a simple and lightweight Pomodoro timer application that you start in yo
 ### Linux
 1. Download the latest romo binary from the [Releases](https://github.com/dj-blume9/Romodoro/releases) page.
 2. Run the following commands to install it globally:
-    ``
+    ```
    tar -xvzf romo-linux.tar.gz
    ./romo
-   ``
-3. Restart your terminal
+   ```
 
 
 ## Usage
