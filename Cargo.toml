@@ -7,4 +7,4 @@ edition = "2021"
 clap = {version = "4.0", features = ["derive"]}
 indicatif = "0.17.9"
 native-dialog = "0.6.4"
-notify-rust = "4.10"
+directories = "5.0"
