@@ -14,7 +14,6 @@ Romo is a simple and lightweight Pomodoro timer application that you start in yo
    tar -xvzf romo-linux.tar.gz
    ./romo
    ```
-3. Restart your terminal
 
 
 ## Usage
