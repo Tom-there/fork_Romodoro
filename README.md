@@ -20,9 +20,9 @@ Romo is a simple and lightweight Pomodoro timer application that you start in yo
 ## Usage
 1. Start a timer by calling "romo" followed by the number of minutes for your timer.
     ```
+    //Start a 10 minute timer
     romo 10
     ```
-    The above starts a 10 minute timer.
 2. Cancel a running timer by calling
    ```
    romo --cancel
