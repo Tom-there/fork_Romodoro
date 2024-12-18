@@ -26,3 +26,7 @@ Romo is a simple and lightweight Pomodoro timer application that you start in yo
    ```
    romo --cancel
    ```
+3. Display Progress Bar
+   ```
+   romo --status
+   ```
