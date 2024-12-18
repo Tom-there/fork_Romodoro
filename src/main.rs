@@ -4,7 +4,6 @@ mod process;
 mod timer;
 
 use clap::Parser;
-use file_utils::{get_file_path, save_to_file};
 use install::ensure_global_install;
 use process::{cancel_timer, show_status};
 use timer::run_timer;
