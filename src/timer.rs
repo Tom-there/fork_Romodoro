@@ -1,7 +1,6 @@
 use native_dialog::MessageDialog;
 use std::{fs, io::Write, path::Path, process, thread, time::Duration};
-
-use crate::pid::{cleanup_pid_file, get_pid_file, save_pid};
+use crate::file_utils::{get_file_path, cleanup_file, save_to_file};
 
 /// Runs the Pomodoro timer
 pub fn run_timer(time: f32) {
@@ -10,15 +9,19 @@ pub fn run_timer(time: f32) {
         return;
     }
 
-    let pid_file = get_pid_file();
-    save_pid(process::id());
+    let pid_file = get_file_path(".romo_pid");
+    save_to_file(&pid_file, process::id());
+
+    let state_file = get_file_path(".romo_state");
 
     let duration_seconds = (time * 60.0).round() as i32;
+    save_to_file(&state_file, duration_seconds);
+
 
     println!("Pomodoro Timer started for {:.1} minutes.", time);
-    for _ in (1..duration_seconds).rev() {
+    for seconds_left in (1..duration_seconds).rev() {
         std::io::stdout().flush().unwrap();
-
+        save_to_file(&state_file, seconds_left);
         thread::sleep(Duration::from_secs(1));
     }
 
@@ -28,11 +31,12 @@ pub fn run_timer(time: f32) {
         .show_alert()
         .unwrap();
 
-    cleanup_pid_file(pid_file);
+    cleanup_file(&pid_file);
+    cleanup_file(&state_file);
 }
 
 pub fn is_timer_running() -> bool {
-    let pid_file = get_pid_file();
+    let pid_file = get_file_path(".romo_pid");
 
     if !Path::new(&pid_file).exists() {
         return false;
@@ -50,6 +54,6 @@ pub fn is_timer_running() -> bool {
         }
     }
 
-    cleanup_pid_file(pid_file);
+    cleanup_file(&pid_file);
     false
 }

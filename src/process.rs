@@ -1,4 +1,6 @@
-use std::process::Command;
+use indicatif::{ProgressBar, ProgressStyle};
+use std::{process::Command, thread, time::Duration, fs};
+use crate::file_utils::{cleanup_file, get_file_path};
 
 /// Checks if a process is running based on its PID
 pub fn process_running(pid: u32) -> bool {
@@ -20,10 +22,8 @@ pub fn process_running(pid: u32) -> bool {
 
 /// Cancels a running timer process
 pub fn cancel_timer() {
-    use crate::pid::{cleanup_pid_file, get_pid_file};
-    use std::fs;
-
-    let pid_file = get_pid_file();
+    let pid_file = get_file_path(".romo_pid");
+    let state_file = get_file_path(".romo_state");
 
     if let Ok(pid_str) = fs::read_to_string(&pid_file) {
         if let Ok(pid) = pid_str.trim().parse::<u32>() {
@@ -40,7 +40,8 @@ pub fn cancel_timer() {
                         .expect("Failed to stop the timer process.");
                 }
             }
-            cleanup_pid_file(pid_file);
+            cleanup_file(&state_file);
+            cleanup_file(&pid_file);
             println!("Timer stopped.");
         } else {
             eprintln!("Invalid PID found in the PID file.");
@@ -50,3 +51,25 @@ pub fn cancel_timer() {
     }
 }
 
+// View Timer Status
+pub fn show_status() {
+    let state_file = get_file_path(".romo_state");
+    if let Ok(state_str) = fs::read_to_string(&state_file) {
+        if let Ok(state) = state_str.trim().parse::<u64>() {
+            let pb = ProgressBar::new(state);
+            pb.set_style(ProgressStyle::default_bar()
+                .template("{spinner:.green} [{eta}] [{bar:40.cyan/blue}]")
+                .unwrap()
+                .progress_chars("##-"));
+
+            for _ in 0..state {
+                thread::sleep(Duration::from_secs(1));
+                pb.inc(1);
+            }
+
+            pb.finish();
+        }
+    } else {
+        eprintln!("No running timer found.");
+    }
+}

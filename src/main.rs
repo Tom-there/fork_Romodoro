@@ -1,21 +1,27 @@
+mod file_utils;
 mod install;
-mod pid;
 mod process;
 mod timer;
 
 use clap::Parser;
+use file_utils::{get_file_path, save_to_file};
 use install::ensure_global_install;
-use process::cancel_timer;
+use process::{cancel_timer, show_status};
 use timer::run_timer;
 
 #[derive(Parser)]
 struct Cli {
-    /// Time in minutes
+    // Time in minutes
     #[arg(value_parser = parse_time)]
     time: Option<f32>,
-    /// Cancel timer flag
+
+    // Cancel timer flag
     #[arg(long)]
     cancel: bool,
+
+    // View Timer Status
+    #[arg(long)]
+    status: bool,
 }
 
 fn main() {
@@ -28,6 +34,11 @@ fn main() {
 
     if args.cancel {
         cancel_timer();
+        return;
+    }
+
+    if args.status {
+        show_status();
         return;
     }
 
