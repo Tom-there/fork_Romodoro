@@ -1,9 +1,10 @@
-use std::{env, fs, path::PathBuf, process::Command};
+use std::{env, fs, path::PathBuf};
 
 pub fn ensure_global_install() -> bool {
     let exe_path = env::current_exe().expect("Failed to determine executable path.");
 
     #[cfg(target_os = "windows")]
+    use std::process::Command;
     {
         let home_dir =
             env::var("USERPROFILE").expect("Failed to get USERPROFILE environment variable");
@@ -58,6 +59,8 @@ pub fn ensure_global_install() -> bool {
 
 #[cfg(target_os = "windows")]
 fn add_to_path_windows(user_bin_dir: &PathBuf) {
+    
+    use std::process::Command;
     let path_to_add = user_bin_dir.to_str().unwrap();
 
     // Modify the User PATH variable using PowerShell
