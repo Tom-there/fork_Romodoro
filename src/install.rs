@@ -4,8 +4,8 @@ pub fn ensure_global_install() -> bool {
     let exe_path = env::current_exe().expect("Failed to determine executable path.");
 
     #[cfg(target_os = "windows")]
-    use std::process::Command;
     {
+       use std::process::Command;  
         let home_dir =
             env::var("USERPROFILE").expect("Failed to get USERPROFILE environment variable");
         let user_bin_dir = PathBuf::from(format!(r"{}\{}", home_dir, ".local\\bin"));
