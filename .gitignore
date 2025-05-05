@@ -1,3 +1,4 @@
 /target
 
 build_and_package.sh
+.DS_Store
